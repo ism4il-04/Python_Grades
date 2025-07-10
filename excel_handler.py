@@ -20,26 +20,26 @@ class GradeProcessor:
         if self.df is not None:
             self.df["Moyenne"] = self.df[self.subjects].mean(axis=1).round(2)
             print ("average calculated successfully")
-            print(self.df)
 
     def verification(self):
         print("verification...")
-        if self.df is not None:
-            if self.df["Moyenne"] >= 12:
-                self.df["Résultat"] = 'V'
+        def check_result(moy):
+            if moy >= 12:
+                return 'V'
             else:
-                self.df["Résultat"] = 'R'
-        print(self.df)
+                return 'R'
+
+        if self.df is not None:
+            self.df["Résultat"] = self.df["Moyenne"].apply(check_result)
 
     def process(self):
         self.read_excel()
         self.calculate_average()
         self.verification()
+        print(self.df)
 
 
 if __name__ == "__main__":
-    processor = GradeProcessor(
-        input_file="notes.xlsx",
-    )
+    processor = GradeProcessor(input_file="notes.xlsx")
     processor.process()
 
