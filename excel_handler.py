@@ -32,10 +32,30 @@ class GradeProcessor:
         if self.df is not None:
             self.df["Résultat"] = self.df["Moyenne"].apply(check_result)
 
+    def add_subject_averages_row(self):
+        if self.df is not None:
+            # Compute average for each subject
+            subjects = self.subjects
+            subjects.append("Moyenne")
+            averages = self.df[subjects].mean().round(2)
+
+            # Create a new row with NaNs and fill in the averages
+            new_row = {col: "" for col in self.df.columns}  # start with empty row
+            new_row["Nom"] = "Moyenne générale"
+
+            for subject in subjects:
+                new_row[subject] = averages[subject]
+
+            # Append the row
+            self.df.loc[len(self.df)] = new_row
+
+            print(" Moyenne par matière ajoutée en bas du tableau.")
+
     def process(self):
         self.read_excel()
         self.calculate_average()
         self.verification()
+        self.add_subject_averages_row()
         print(self.df)
 
 
